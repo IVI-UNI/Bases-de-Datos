@@ -55,10 +55,10 @@ echo "Obteniendo datos de Egresados"
 wget -q -O /var/lib/mysql-files/Egresados2021.csv 'https://zaguan.unizar.es/record/107371/files/CSV.csv'
 sed -i '/Grado/!d' /var/lib/mysql-files/Egresados2021.csv
 sed -i -e 's/Grado: //g' /var/lib/mysql-files/Egresados2021.csv
-wget -q -O /var/lib/mysql-files/Egresados2020.csv 'https://zaguan.unizar.es/record/98173/files/CSV.csv'
+wget -q -O /var/lib/mysql-files/Egresados2020.csv 'https://zaguan.unizar.es/record/95646/files/CSV.csv'
 sed -i '/Grado/!d' /var/lib/mysql-files/Egresados2020.csv
 sed -i -e 's/Grado: //g' /var/lib/mysql-files/Egresados2020.csv
-wget -q -O /var/lib/mysql-files/Egresados2019.csv 'https://zaguan.unizar.es/record/76879/files/CSV.csv'
+wget -q -O /var/lib/mysql-files/Egresados2019.csv 'https://zaguan.unizar.es/record/83979/files/CSV.csv'
 sed -i '/Grado/!d' /var/lib/mysql-files/Egresados2019.csv
 sed -i -e 's/Grado: //g' /var/lib/mysql-files/Egresados2019.csv
 END_COMMENT
@@ -155,108 +155,215 @@ echo "datos de resultados de la oferta academica cargados en la base de datos"
 
 #Carga de datos resltados a la base de datos resultadosofertaacademica
 echo "Cargando datos a la base de datos..."
-mysql -D resultadosofertaacademica -e "CREATE TABLE Egresados2021(CURSO_ACADEMICO INT,LOCALIDAD VARCHAR(100), ESTUDIO VARCHAR(150),TIPO_ESTUDIO VARCHAR(50), TIPO_EGRESO VARCHAR(70), SEXO VARCHAR(10), ALUMNOS_GRADUADOS INT, ALUMNOS_INTERRUMPEN_ESTUDIOS INT, ALUMNOS_INTERRUMPEN_EST_ANO1 INT, ALUMNOS_TRASLADAN_OTRA_UNIV INT , DURACION_mEDIA_GRADUADOS FLOAT, TASA_EFIENCIA FLOAT, FECHA_ACTUALIZACION VARCHAR(30));"
-mysql -D resultadosofertaacademica -e "LOAD DATA INFILE '/var/lib/mysql-files/Egresados2021.csv' INTO TABLE Egresados2021 FIELDS TERMINATED BY ';' ENCLOSED BY'' LINES TERMINATED BY '\n' IGNORE 1 ROWS(CURSO_ACADEMICO,LOCALIDAD, ESTUDIO,TIPO_ESTUDIO, TIPO_EGRESO, SEXO, @ALUMNOS_GRADUADOS, @ALUMNOS_INTERRUMPEN_ESTUDIOS, @ALUMNOS_INTERRUMPEN_EST_ANO1, @ALUMNOS_TRASLADAN_OTRA_UNIV, @DURACION_mEDIA_GRADUADOS, @TASA_EFIENCIA, FECHA_ACTUALIZACION)SET 
+mysql -D resultadosofertaacademica -e "CREATE TABLE Egresados2019(CURSO_ACADEMICO INT,LOCALIDAD VARCHAR(100), ESTUDIO VARCHAR(150),TIPO_ESTUDIO VARCHAR(50), TIPO_EGRESO VARCHAR(70), SEXO VARCHAR(15), ALUMNOS_GRADUADOS INT, ALUMNOS_INTERRUMPEN_ESTUDIOS INT, ALUMNOS_INTERRUMPEN_EST_ANO1 INT, ALUMNOS_TRASLADAN_OTRA_UNIV INT , DURACION_mEDIA_GRADUADOS FLOAT, TASA_EFIENCIA FLOAT, FECHA_ACTUALIZACION VARCHAR(30));"
+mysql -D resultadosofertaacademica -e "LOAD DATA INFILE '/var/lib/mysql-files/Egresados2019.csv' INTO TABLE Egresados2019 FIELDS TERMINATED BY ';' ENCLOSED BY'' LINES TERMINATED BY '\n' IGNORE 1 ROWS(CURSO_ACADEMICO,LOCALIDAD, ESTUDIO,TIPO_ESTUDIO, TIPO_EGRESO, SEXO, @ALUMNOS_GRADUADOS, @ALUMNOS_INTERRUMPEN_ESTUDIOS, @ALUMNOS_INTERRUMPEN_EST_ANO1, @ALUMNOS_TRASLADAN_OTRA_UNIV, @DURACION_mEDIA_GRADUADOS, @TASA_EFIENCIA, FECHA_ACTUALIZACION)SET 
 										ALUMNOS_GRADUADOS= NULLIF(@ALUMNOS_GRADUADOS,''),ALUMNOS_INTERRUMPEN_ESTUDIOS= NULLIF(@ALUMNOS_INTERRUMPEN_ESTUDIOS,''),ALUMNOS_INTERRUMPEN_EST_ANO1= NULLIF(@ALUMNOS_INTERRUMPEN_EST_ANO1,''),ALUMNOS_TRASLADAN_OTRA_UNIV= NULLIF(@ALUMNOS_TRASLADAN_OTRA_UNIV,''),DURACION_mEDIA_GRADUADOS= NULLIF(@DURACION_mEDIA_GRADUADOS,''),TASA_EFIENCIA= NULLIF(@TASA_EFIENCIA,'');"
-
-mysql -D resultadosofertaacademica -e "CREATE TABLE Egresados2020(CURSO_ACADEMICO INT,LOCALIDAD VARCHAR(100), ESTUDIO VARCHAR(150),TIPO_ESTUDIO VARCHAR(50), TIPO_EGRESO VARCHAR(70), SEXO VARCHAR(10), ALUMNOS_GRADUADOS INT, ALUMNOS_INTERRUMPEN_ESTUDIOS INT, ALUMNOS_INTERRUMPEN_EST_ANO1 INT, ALUMNOS_TRASLADAN_OTRA_UNIV INT , DURACION_mEDIA_GRADUADOS FLOAT, TASA_EFIENCIA FLOAT, FECHA_ACTUALIZACION VARCHAR(30));"
+echo "--1--"
+mysql -D resultadosofertaacademica -e "CREATE TABLE Egresados2020(CURSO_ACADEMICO INT,LOCALIDAD VARCHAR(100), ESTUDIO VARCHAR(150),TIPO_ESTUDIO VARCHAR(50), TIPO_EGRESO VARCHAR(70), SEXO VARCHAR(15), ALUMNOS_GRADUADOS INT, ALUMNOS_INTERRUMPEN_ESTUDIOS INT, ALUMNOS_INTERRUMPEN_EST_ANO1 INT, ALUMNOS_TRASLADAN_OTRA_UNIV INT , DURACION_mEDIA_GRADUADOS FLOAT, TASA_EFIENCIA FLOAT, FECHA_ACTUALIZACION VARCHAR(30));"
 mysql -D resultadosofertaacademica -e "LOAD DATA INFILE '/var/lib/mysql-files/Egresados2020.csv' INTO TABLE Egresados2020 FIELDS TERMINATED BY ';' ENCLOSED BY'' LINES TERMINATED BY '\n' IGNORE 1 ROWS(CURSO_ACADEMICO,LOCALIDAD, ESTUDIO,TIPO_ESTUDIO, TIPO_EGRESO, SEXO, @ALUMNOS_GRADUADOS, @ALUMNOS_INTERRUMPEN_ESTUDIOS, @ALUMNOS_INTERRUMPEN_EST_ANO1, @ALUMNOS_TRASLADAN_OTRA_UNIV, @DURACION_mEDIA_GRADUADOS, @TASA_EFIENCIA, FECHA_ACTUALIZACION)SET 
 										ALUMNOS_GRADUADOS= NULLIF(@ALUMNOS_GRADUADOS,''),ALUMNOS_INTERRUMPEN_ESTUDIOS= NULLIF(@ALUMNOS_INTERRUMPEN_ESTUDIOS,''),ALUMNOS_INTERRUMPEN_EST_ANO1= NULLIF(@ALUMNOS_INTERRUMPEN_EST_ANO1,''),ALUMNOS_TRASLADAN_OTRA_UNIV= NULLIF(@ALUMNOS_TRASLADAN_OTRA_UNIV,''),DURACION_mEDIA_GRADUADOS= NULLIF(@DURACION_mEDIA_GRADUADOS,''),TASA_EFIENCIA= NULLIF(@TASA_EFIENCIA,'');"
-
-mysql -D resultadosofertaacademica -e "CREATE TABLE Egresados2019(CURSO_ACADEMICO INT,LOCALIDAD VARCHAR(100), ESTUDIO VARCHAR(150),TIPO_ESTUDIO VARCHAR(50), TIPO_EGRESO VARCHAR(70), SEXO VARCHAR(10), ALUMNOS_GRADUADOS INT, ALUMNOS_INTERRUMPEN_ESTUDIOS INT, ALUMNOS_INTERRUMPEN_EST_ANO1 INT, ALUMNOS_TRASLADAN_OTRA_UNIV INT , DURACION_mEDIA_GRADUADOS FLOAT, TASA_EFIENCIA FLOAT, FECHA_ACTUALIZACION VARCHAR(30));"
-mysql -D resultadosofertaacademica -e "LOAD DATA INFILE '/var/lib/mysql-files/Egresados2019.csv' INTO TABLE Egresados2019 FIELDS TERMINATED BY ';' ENCLOSED BY'' LINES TERMINATED BY '\n' IGNORE 1 ROWS(CURSO_ACADEMICO, LOCALIDAD, ESTUDIO, TIPO_ESTUDIO, TIPO_EGRESO, SEXO, @ALUMNOS_GRADUADOS, @ALUMNOS_INTERRUMPEN_ESTUDIOS, @ALUMNOS_INTERRUMPEN_EST_ANO1, @ALUMNOS_TRASLADAN_OTRA_UNIV, @DURACION_mEDIA_GRADUADOS, @TASA_EFIENCIA, FECHA_ACTUALIZACION) 
-										SET ALUMNOS_GRADUADOS= NULLIF(@ALUMNOS_GRADUADOS,''), ALUMNOS_INTERRUMPEN_ESTUDIOS= NULLIF(@ALUMNOS_INTERRUMPEN_ESTUDIOS,''), ALUMNOS_INTERRUMPEN_EST_ANO1= NULLIF(@ALUMNOS_INTERRUMPEN_EST_ANO1,''), ALUMNOS_TRASLADAN_OTRA_UNIV= NULLIF(@ALUMNOS_TRASLADAN_OTRA_UNIV,''), DURACION_mEDIA_GRADUADOS= NULLIF(@DURACION_mEDIA_GRADUADOS,''), TASA_EFIENCIA= NULLIF(@TASA_EFIENCIA,'');"
-: << 'luego'
-mysql -uprofesor -p${PASSWDDB} -e "
+echo "GOT IT?"
+mysql -D resultadosofertaacademica -e "CREATE TABLE Egresados2021(CURSO_ACADEMICO INT,LOCALIDAD VARCHAR(100), ESTUDIO VARCHAR(150),TIPO_ESTUDIO VARCHAR(50), TIPO_EGRESO VARCHAR(70), SEXO VARCHAR(15), ALUMNOS_GRADUADOS INT, ALUMNOS_INTERRUMPEN_ESTUDIOS INT, ALUMNOS_INTERRUMPEN_EST_ANO1 INT, ALUMNOS_TRASLADAN_OTRA_UNIV INT , DURACION_mEDIA_GRADUADOS FLOAT, TASA_EFIENCIA FLOAT, FECHA_ACTUALIZACION VARCHAR(30));"
+mysql -D resultadosofertaacademica -e "LOAD DATA INFILE '/var/lib/mysql-files/Egresados2021.csv' INTO TABLE Egresados2021 FIELDS TERMINATED BY ';' ENCLOSED BY'' LINES TERMINATED BY '\n' IGNORE 1 ROWS(CURSO_ACADEMICO,LOCALIDAD, ESTUDIO,TIPO_ESTUDIO, TIPO_EGRESO, SEXO, @ALUMNOS_GRADUADOS, @ALUMNOS_INTERRUMPEN_ESTUDIOS, @ALUMNOS_INTERRUMPEN_EST_ANO1, @ALUMNOS_TRASLADAN_OTRA_UNIV, @DURACION_mEDIA_GRADUADOS, @TASA_EFIENCIA, FECHA_ACTUALIZACION)SET 
+										ALUMNOS_GRADUADOS= NULLIF(@ALUMNOS_GRADUADOS,''),ALUMNOS_INTERRUMPEN_ESTUDIOS= NULLIF(@ALUMNOS_INTERRUMPEN_ESTUDIOS,''),ALUMNOS_INTERRUMPEN_EST_ANO1= NULLIF(@ALUMNOS_INTERRUMPEN_EST_ANO1,''),ALUMNOS_TRASLADAN_OTRA_UNIV= NULLIF(@ALUMNOS_TRASLADAN_OTRA_UNIV,''),DURACION_mEDIA_GRADUADOS= NULLIF(@DURACION_mEDIA_GRADUADOS,''),TASA_EFIENCIA= NULLIF(@TASA_EFIENCIA,'');"
+#: << 'luego'
+mysql -uprofesor -p${PASSWDDB} -D resultadosofertaacademica -e "
 
 CREATE TABLE ${MAINDB}.Estudio (
-	id_estudio tinyint NOT NULL ,
-	nombre_estudio varchar(100) NULL,
+	nombre_estudio varchar(100) NOT NULL,
 	tipo_estudio varchar(15) NULL,
-    PRIMARY KEY(id_estudio)
+    PRIMARY KEY(nombre_estudio)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
     
 CREATE TABLE ${MAINDB}.Centro (
-	id_centro TINYINT NOT NULL ,
-	nombre_centro varchar(100) NULL,
-	tipo_centro varchar(15) NULL,
-    PRIMARY KEY(id_centro)
+	nombre_centro varchar(100) NOT NULL,
+	tipo_centro varchar(30) NULL,
+	nombre_localidad varchar(100) NULL,
+    PRIMARY KEY(nombre_centro)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;  
 
 CREATE TABLE ${MAINDB}.Impartido (
-    IDestudio TINYINT,	
-    IDcentro TINYINT,
-    curso TINYINT,
-	plazas_ofertadas TINYINT NULL,
-    plazas_matriculadas TINYINT NULL,
+    id_impartido SERIAL,
+    curso  INT,
+    nombre_estudio varchar(100)  ,    
+    nombre_centro varchar(100) ,
+    plazas_ofertadas  INT NULL,
+    plazas_matriculadas  INT NULL,
     plazas_solicitadas int NULL,
-	alumnos_nuevo_ingreso TINYINT NULL,
+    alumnos_nuevo_ingreso  INT NULL,
     nota_corte_julio float NULL,
     nota_corte_septiembre float NULL,
-    alumnos_graduados TINYINT NULL,
-    alumnos_adapta_grado_matri TINYINT NULL,
-    alumnos_adapta_grado_matri_ni TINYINT NULL,
-    alumnos_adapta_grado_titulado TINYINT NULL,
-    alumnos_con_reconocimiento TINYINT NULL,  
-    alumnos_movilidad_entrada TINYINT NULL,
-    alumnos_movilidad_salida TINYINT NULL,
+    alumnos_graduados  INT NULL,
+    alumnos_adapta_grado_matri  INT NULL,
+    alumnos_adapta_grado_matri_ni  INT NULL,
+    alumnos_adapta_grado_titulado  INT NULL,
+    alumnos_con_reconocimiento  INT NULL,  
+    alumnos_movilidad_entrada  INT NULL,
+    alumnos_movilidad_salida  INT NULL,
     creditos_matriculados float NULL,
     creditos_reconocidos float NULL,
     duracion_media_graduados float NULL,
-    egresados_voluntarios TINYINT NULL,
+    egresados_voluntarios  INT NULL,
     indice_ocupacion float NULL,
     tasa_exito float NULL,
     tasa_rendimiento float NULL,
     tasa_abandono float NULL,
     tasa_graduacion float NULL,
-    PRIMARY KEY (IDestudio, IDcentro),
-    FOREIGN KEY (IDcentro) REFERENCES ${MAINDB}.Centro(id_centro)
-	ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (IDestudio) REFERENCES ${MAINDB}.Estudio(id_estudio)
-	ON DELETE CASCADE ON UPDATE CASCADE
+    localidad varchar(30) NULL,
+    PRIMARY KEY (id_impartido),
+    FOREIGN KEY (nombre_centro) REFERENCES Centro(nombre_centro)
+    ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (nombre_estudio) REFERENCES Estudio(nombre_estudio)
+    ON DELETE CASCADE ON UPDATE CASCADE
     
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE ${MAINDB}.Localidad (
-	id_localidad TINYINT NOT NULL ,
-	nombre_localidad varchar(100) NULL,
-    PRIMARY KEY(id_localidad) 
+	nombre_localidad varchar(100) NOT NULL,
+    PRIMARY KEY(nombre_localidad) 
 )ENGINE=InnoDB DEFAULT CHARSET=utf8; 
 
 CREATE TABLE ${MAINDB}.Pais (
-	id_pais TINYINT NOT NULL ,
-	nombre_pais varchar(100) NULL,
-    PRIMARY KEY(id_pais) 
+	nombre_pais varchar(100) NOT NULL,
+    PRIMARY KEY(nombre_pais) 
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;   
     
 CREATE TABLE ${MAINDB}.Movilidad (
 	nombre_movilidad varchar(100) NOT NULL,
-    id_centro TINYINT NOT NULL,
-    PRIMARY KEY(nombre_movilidad, id_centro),
-    FOREIGN KEY (id_centro) REFERENCES ${MAINDB}.Centro(id_centro)
-	ON DELETE CASCADE ON UPDATE CASCADE    
+    PRIMARY KEY(nombre_movilidad)   
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE ${MAINDB}.Realiza (
-	curso TINYINT,
-	nombre_movilidad varchar(100),
-    id_centro TINYINT,
-    id_pais TINYINT NOT NULL,
+	id_realiza INT NOT NULL AUTO_INCREMENT,
+	curso INT,
+	nombre_movilidad varchar(100) NOT NULL,
+     nombre_centro varchar(100) NOT NULL,
+     nombre_pais varchar(100) NOT NULL,
     area_estudios varchar(100) NULL,
     in_out varchar(4) NULL,
     nombre_idioma varchar(50),
     universidad_destino varchar(100),
-    plazas_ofertadas TINYINT,
-    plazas_asignadas TINYINT,
-    PRIMARY KEY (nombre_movilidad, id_centro),
+    plazas_ofertadas INT,
+    plazas_asignadas INT,
+    PRIMARY KEY (id_realiza),
     FOREIGN KEY (nombre_movilidad) REFERENCES ${MAINDB}.Movilidad(nombre_movilidad)
 	ON DELETE CASCADE ON UPDATE CASCADE,
-	FOREIGN KEY (id_pais) REFERENCES ${MAINDB}.Pais(id_pais)
+	FOREIGN KEY ( nombre_pais) REFERENCES ${MAINDB}.Pais( nombre_pais)
 	ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (id_centro) REFERENCES ${MAINDB}.Centro(id_centro)
+    FOREIGN KEY ( nombre_centro) REFERENCES ${MAINDB}.Centro( nombre_centro)
 	ON DELETE CASCADE ON UPDATE CASCADE
   )ENGINE=InnoDB DEFAULT CHARSET=utf8;  
   
   
 #CREATE TABLE ESTUDIO"
-luego
+
+echo " Cargando datos en la tabla Localidad "
+mysql -D resultadosofertaacademica -e " INSERT INTO Localidad (nombre_localidad) SELECT distinct LOCALIDAD FROM Oferta_Ocupacion2021; "
+echo " Cargando datos en la tabla pais "
+mysql -D resultadosofertaacademica -e " INSERT INTO Pais (nombre_pais) SELECT distinct PAIS_UNIVERSIDAD_ACUERDO FROM movilidad2021;"
+echo " Cargando datos en la tabla Movilidad "
+mysql -D resultadosofertaacademica -e " INSERT INTO Movilidad (nombre_movilidad) SELECT distinct NOMBRE_PROGRAMA_MOVILIDAD FROM movilidad2021;"
+echo " Cargando datos en la tabla Centro "
+mysql -D resultadosofertaacademica -e "INSERT INTO Centro(nombre_centro, tipo_centro, nombre_localidad) SELECT distinct CENTRO, TIPO_CENTRO, LOCALIDAD FROM Oferta_Ocupacion2021;"
+echo " Cargando datos en la tabla Estudio "
+mysql -D resultadosofertaacademica -e "INSERT INTO Estudio(nombre_estudio) SELECT distinct ESTUDIO  FROM Oferta_Ocupacion2021;"
+mysql -D resultadosofertaacademica -e "INSERT INTO Estudio(nombre_estudio) SELECT ESTUDIO ESTUDIO FROM Oferta_Ocupacion2020 WHERE ESTUDIO NOT IN(SELECT nombre_estudio FROM Estudio);"
+mysql -D resultadosofertaacademica -e "INSERT INTO Estudio(nombre_estudio) SELECT ESTUDIO ESTUDIO FROM Oferta_Ocupacion2019 WHERE ESTUDIO NOT IN(SELECT nombre_estudio FROM Estudio);"
+mysql -D resultadosofertaacademica -e "INSERT INTO Realiza (curso, nombre_movilidad, nombre_centro, nombre_pais, area_estudios,
+                                                 in_out, nombre_idioma, universidad_destino, plazas_ofertadas, plazas_asignadas)
+                                    SELECT CURSO_ACADEMICO, NOMBRE_PROGRAMA_MOVILIDAD, CENTRO, PAIS_UNIVERSIDAD_ACUERDO, NOMBRE_AREA_ESTUDIOS_MOV,
+                                             IN_OUT, NOMBRE_IDIOMA_NIVEL_MOVILIDAD, UNIVERSIDAD_ACUERDO, PLAZAS_OFERTADAS_ALUMNOS, PLAZAS_ASIGNADAS_ALUMNO_OUT
+                                    FROM movilidad2021;"
+mysql -D resultadosofertaacademica -e "INSERT INTO Realiza (curso, nombre_movilidad, nombre_centro, nombre_pais, area_estudios,
+                                                 in_out, nombre_idioma, universidad_destino, plazas_ofertadas, plazas_asignadas)
+                                    SELECT CURSO_ACADEMICO, NOMBRE_PROGRAMA_MOVILIDAD, CENTRO, PAIS_UNIVERSIDAD_ACUERDO, NOMBRE_AREA_ESTUDIOS_MOV,
+                                             IN_OUT, NOMBRE_IDIOMA_NIVEL_MOVILIDAD, UNIVERSIDAD_ACUERDO, PLAZAS_OFERTADAS_ALUMNOS, PLAZAS_ASIGNADAS_ALUMNO_OUT
+                                    FROM movilidad2020;"
+mysql -D resultadosofertaacademica -e "INSERT INTO Realiza (curso, nombre_movilidad, nombre_centro, nombre_pais, area_estudios,
+                                                 in_out, nombre_idioma, universidad_destino, plazas_ofertadas, plazas_asignadas)
+                                    SELECT CURSO_ACADEMICO, NOMBRE_PROGRAMA_MOVILIDAD, CENTRO, PAIS_UNIVERSIDAD_ACUERDO, NOMBRE_AREA_ESTUDIOS_MOV,
+                                             IN_OUT, NOMBRE_IDIOMA_NIVEL_MOVILIDAD, UNIVERSIDAD_ACUERDO, PLAZAS_OFERTADAS_ALUMNOS, PLAZAS_ASIGNADAS_ALUMNO_OUT
+                                    FROM movilidad2019;"      
+                                                               
+#: << commet
+mysql -D resultadosofertaacademica -e "CREATE TABLE temporal(CURSO_ACADEMICO VARCHAR (15), localidad VARCHAR(100), estudio varchar(150), abandonos INT);"
+
+mysql -D resultadosofertaacademica -e "insert INTO temporal(localidad, estudio, abandonos, CURSO_ACADEMICO) 
+                                        SELECT localidad, estudio, SUM(ALUMNOS_INTERRUMPEN_ESTUDIOS) AS abandonos, CURSO_ACADEMICO
+                                        FROM Egresados2021
+                                        WHERE TIPO_EGRESO='Abandono Voluntario'
+                                        GROUP BY localidad, estudio, CURSO_ACADEMICO;"
+mysql -D resultadosofertaacademica -e "insert INTO temporal(localidad, estudio, abandonos, CURSO_ACADEMICO) 
+                                        SELECT localidad, estudio, SUM(ALUMNOS_INTERRUMPEN_ESTUDIOS) AS abandonos, CURSO_ACADEMICO
+                                        FROM Egresados2020
+                                        WHERE TIPO_EGRESO='Abandono Voluntario'
+                                        GROUP BY localidad, estudio, CURSO_ACADEMICO;"
+mysql -D resultadosofertaacademica -e "insert INTO temporal(localidad, estudio, abandonos, CURSO_ACADEMICO) 
+                                        SELECT localidad, estudio, SUM(ALUMNOS_INTERRUMPEN_ESTUDIOS) AS abandonos, CURSO_ACADEMICO
+                                        FROM Egresados2019
+                                        WHERE TIPO_EGRESO='Abandono Voluntario'
+                                        GROUP BY localidad, estudio, CURSO_ACADEMICO;"
+                                     
+mysql -D resultadosofertaacademica -e "CREATE TABLE temporalB(CURSO_ACADEMICO VARCHAR (15), estudio VARCHAR(150), localidad VARCHAR(100), Centro VARCHAR(100), abandonos INT);"
+
+mysql -D resultadosofertaacademica -e "INSERT INTO temporalB (estudio, localidad, Centro, abandonos, CURSO_ACADEMICO)
+                                        SELECT distinct temporal.estudio, temporal.localidad, Centro, abandonos, temporal.CURSO_ACADEMICO
+                                        FROM temporal INNER JOIN Oferta_Ocupacion2021 ON temporal.localidad = Oferta_Ocupacion2021.localidad AND 
+                                        temporal.estudio=Oferta_Ocupacion2021.ESTUDIO"
+mysql -D resultadosofertaacademica -e "INSERT INTO temporalB ( estudio, localidad, Centro, abandonos, CURSO_ACADEMICO)
+                                        SELECT distinct temporal.estudio, temporal.localidad, Centro, abandonos, temporal.CURSO_ACADEMICO
+                                        FROM temporal INNER JOIN Oferta_Ocupacion2020 ON temporal.localidad = Oferta_Ocupacion2020.localidad AND 
+                                        temporal.estudio=Oferta_Ocupacion2020.ESTUDIO
+                                        WHERE temporal.CURSO_ACADEMICO='2019'"
+mysql -D resultadosofertaacademica -e "INSERT INTO temporalB ( estudio, localidad, Centro, abandonos, CURSO_ACADEMICO)
+                                        SELECT distinct temporal.estudio, temporal.localidad, Centro, abandonos, temporal.CURSO_ACADEMICO
+                                        FROM temporal INNER JOIN Oferta_Ocupacion2019 ON temporal.localidad = Oferta_Ocupacion2019.localidad AND 
+                                        temporal.estudio=Oferta_Ocupacion2019.ESTUDIO
+                                        WHERE temporal.CURSO_ACADEMICO='2018';"
+# : << luego 
+mysql -D resultadosofertaacademica -e "INSERT INTO Impartido  (curso, nombre_estudio, nombre_centro, plazas_matriculadas,alumnos_nuevo_ingreso, 
+                                    creditos_matriculados,creditos_reconocidos, alumnos_graduados, alumnos_adapta_grado_matri, 
+                                    alumnos_adapta_grado_matri_ni, alumnos_adapta_grado_titulado, alumnos_movilidad_entrada, 
+                                    alumnos_movilidad_salida, duracion_media_graduados, tasa_exito, tasa_rendimiento, tasa_abandono, tasa_graduacion,
+                                    plazas_ofertadas, plazas_solicitadas, indice_ocupacion, nota_corte_julio, nota_corte_septiembre, egresados_voluntarios, localidad)
+                                    SELECT oferta.CURSO_ACADEMICO, Resultados2021.ESTUDIO, Resultados2021.CENTRO, ALUMNOS_MATRICULADOS, ALUMNOS_NUEVO_INGRESO,CREDITOS_MATRICULADOS ,
+                                            CREDITOS_RECONOCIDOS, Resultados2021.ALUMNOS_GRADUADOS, ALUMNOS_ADAPTA_GRADO_MATRI, ALUMNOS_ADAPTA_GRADO_MATRI_NI, ALUMNOS_ADAPTA_GRADO_TITULADO,
+                                            ALUMNOS_MOVILIDAD_ENTRADA, ALUMNOS_MOVILIDAD_SALIDA, DURACION_MEDIA_GRADUADOS, TASA_EXITO, TASA_RENDIMIENTO, TASA_ABANDONO, TASA_GRADUACION,
+                                            PLAZAS, PLAZAS_SOLICITADAS, INDICE_OCUPACION, notas.NOTA_CORTE_DEFINITIVA_JULIO, notas.NOTA_CORTE_DEFINITIVA_SEPTIEMBRE, abandonos, oferta.localidad
+                                    FROM Resultados2021 INNER JOIN Oferta_Ocupacion2021 oferta ON 
+                                         Resultados2021.ESTUDIO = oferta.ESTUDIO AND Resultados2021.CENTRO=oferta.CENTRO INNER JOIN NotasCorte2021 notas ON
+                                         oferta.ESTUDIO = notas.ESTUDIO AND oferta.CENTRO = notas.CENTRO INNER JOIN temporalB ON 
+                                         temporalB.ESTUDIO = notas.ESTUDIO AND temporalB.Centro = notas.Centro 
+                                    WHERE ALUMNOS_MATRICULADOS IS NOT NULL;"
+
+mysql -D resultadosofertaacademica -e "INSERT INTO Impartido  (curso, nombre_estudio, nombre_centro, plazas_matriculadas,alumnos_nuevo_ingreso, 
+                                    creditos_matriculados,creditos_reconocidos, alumnos_graduados, alumnos_adapta_grado_matri, 
+                                    alumnos_adapta_grado_matri_ni, alumnos_adapta_grado_titulado, alumnos_movilidad_entrada, 
+                                    alumnos_movilidad_salida, duracion_media_graduados, tasa_exito, tasa_rendimiento, tasa_abandono, tasa_graduacion,
+                                    plazas_ofertadas, plazas_solicitadas, indice_ocupacion, nota_corte_julio, nota_corte_septiembre, egresados_voluntarios, localidad)
+                                    SELECT oferta.CURSO_ACADEMICO, Resultados2020.ESTUDIO, Resultados2020.CENTRO, ALUMNOS_MATRICULADOS, ALUMNOS_NUEVO_INGRESO,CREDITOS_MATRICULADOS ,
+                                            CREDITOS_RECONOCIDOS, Resultados2020.ALUMNOS_GRADUADOS, ALUMNOS_ADAPTA_GRADO_MATRI, ALUMNOS_ADAPTA_GRADO_MATRI_NI, ALUMNOS_ADAPTA_GRADO_TITULADO,
+                                            ALUMNOS_MOVILIDAD_ENTRADA, ALUMNOS_MOVILIDAD_SALIDA, DURACION_MEDIA_GRADUADOS, TASA_EXITO, TASA_RENDIMIENTO, TASA_ABANDONO, TASA_GRADUACION,
+                                            PLAZAS, PLAZAS_SOLICITADAS, INDICE_OCUPACION, notas.NOTA_CORTE_DEFINITIVA_JULIO, notas.NOTA_CORTE_DEFINITIVA_SEPTIEMBRE, abandonos, oferta.localidad
+                                    FROM Resultados2020 INNER JOIN Oferta_Ocupacion2020 oferta ON 
+                                         Resultados2020.ESTUDIO = oferta.ESTUDIO AND Resultados2020.CENTRO=oferta.CENTRO INNER JOIN NotasCorte2020 notas ON
+                                         oferta.ESTUDIO = notas.ESTUDIO AND oferta.CENTRO = notas.CENTRO INNER JOIN temporalB ON 
+                                         temporalB.ESTUDIO = notas.ESTUDIO AND temporalB.Centro = notas.Centro 
+                                    WHERE ALUMNOS_MATRICULADOS IS NOT NULL;"
+
+mysql -D resultadosofertaacademica -e "INSERT INTO Impartido  (curso, nombre_estudio, nombre_centro, plazas_matriculadas,alumnos_nuevo_ingreso, 
+                                    creditos_matriculados,creditos_reconocidos, alumnos_graduados, alumnos_adapta_grado_matri, 
+                                    alumnos_adapta_grado_matri_ni, alumnos_adapta_grado_titulado, alumnos_movilidad_entrada, 
+                                    alumnos_movilidad_salida, duracion_media_graduados, tasa_exito, tasa_rendimiento, tasa_abandono, tasa_graduacion,
+                                    plazas_ofertadas, plazas_solicitadas, indice_ocupacion, nota_corte_julio, nota_corte_septiembre, egresados_voluntarios, localidad)
+                                    SELECT oferta.CURSO_ACADEMICO, Resultados2019.ESTUDIO, Resultados2019.CENTRO, ALUMNOS_MATRICULADOS, ALUMNOS_NUEVO_INGRESO,CREDITOS_MATRICULADOS ,
+                                            CREDITOS_RECONOCIDOS, Resultados2019.ALUMNOS_GRADUADOS, ALUMNOS_ADAPTA_GRADO_MATRI, ALUMNOS_ADAPTA_GRADO_MATRI_NI, ALUMNOS_ADAPTA_GRADO_TITULADO,
+                                            ALUMNOS_MOVILIDAD_ENTRADA, ALUMNOS_MOVILIDAD_SALIDA, DURACION_MEDIA_GRADUADOS, TASA_EXITO, TASA_RENDIMIENTO, TASA_ABANDONO, TASA_GRADUACION,
+                                            PLAZAS, PLAZAS_SOLICITADAS, INDICE_OCUPACION, notas.NOTA_CORTE_DEFINITIVA_JULIO, notas.NOTA_CORTE_DEFINITIVA_SEPTIEMBRE, abandonos, oferta.localidad
+                                    FROM Resultados2019 INNER JOIN Oferta_Ocupacion2019 oferta ON 
+                                         Resultados2019.ESTUDIO = oferta.ESTUDIO AND Resultados2019.CENTRO=oferta.CENTRO INNER JOIN NotasCorte2019 notas ON
+                                         oferta.ESTUDIO = notas.ESTUDIO AND oferta.CENTRO = notas.CENTRO INNER JOIN temporalB ON 
+                                         temporalB.ESTUDIO = notas.ESTUDIO AND temporalB.Centro = notas.Centro 
+                                    WHERE ALUMNOS_MATRICULADOS IS NOT NULL;"
+
+# luego
