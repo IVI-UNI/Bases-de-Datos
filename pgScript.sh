@@ -57,14 +57,14 @@ echo "Obteniendo datos de Egresados"
 wget -q -O /etc/postgresql/Practica1/Egresados2021.csv 'https://zaguan.unizar.es/record/107371/files/CSV.csv'
 sed -i '/Grado/!d' /etc/postgresql/Practica1/Egresados2021.csv
 sed -i -e 's/Grado: //g' /etc/postgresql/Practica1/Egresados2021.csv
-wget -q -O /etc/postgresql/Practica1/Egresados2020.csv 'https://zaguan.unizar.es/record/98173/files/CSV.csv'
+wget -q -O /etc/postgresql/Practica1/Egresados2020.csv 'https://zaguan.unizar.es/record/95646/files/CSV.csv'
 sed -i '/Grado/!d' /etc/postgresql/Practica1/Egresados2020.csv
 sed -i -e 's/Grado: //g' /etc/postgresql/Practica1/Egresados2020.csv
-wget -q -O /etc/postgresql/Practica1/Egresados2019.csv 'https://zaguan.unizar.es/record/76879/files/CSV.csv'
+wget -q -O /etc/postgresql/Practica1/Egresados2019.csv 'https://zaguan.unizar.es/record/83979/files/CSV.csv'
 sed -i '/Grado/!d' /etc/postgresql/Practica1/Egresados2019.csv
 sed -i -e 's/Grado: //g' /etc/postgresql/Practica1/Egresados2019.csv
 
-echo " Cargando datos en la base de datos..."
+echo " Descargando datos..."
 #Creación de la base de datos resultadosofertaacademica 
 
 psql -U postgres  -c"DROP DATABASE IF EXISTS resultadosofertaacademica;"
@@ -124,10 +124,10 @@ psql -U postgres resultadosofertaacademica -c "COPY Resultados2019 FROM '/etc/po
 #Carga de datos resltados a la base de datos resultadosofertaacademica
 echo "Cargando datos a la base de datos..."
 psql -U postgres  resultadosofertaacademica -c "CREATE TABLE Egresados2021(CURSO_ACADEMICO SMALLINT,LOCALIDAD VARCHAR(100), ESTUDIO VARCHAR(150),TIPO_ESTUDIO VARCHAR(50), TIPO_EGRESO VARCHAR(70), SEXO VARCHAR(10), ALUMNOS_GRADUADOS SMALLINT, ALUMNOS_INTERRUMPEN_ESTUDIOS INT, ALUMNOS_INTERRUMPEN_EST_ANO1 INT, ALUMNOS_TRASLADAN_OTRA_UNIV INT , DURACION_mEDIA_GRADUADOS FLOAT, TASA_EFIENCIA FLOAT, FECHA_ACTUALIZACION DATE);"
-psql -U postgres resultadosofertaacademica -c "COPY Egresados2021 FROM '/etc/postgresql/Practica1/Egresados2021.csv' DELIMITER ';'CSV HEADER;"
+psql -U postgres resultadosofertaacademica -c "COPY Egresados2021 FROM '/etc/postgresql/Practica1/Egresados2019.csv' DELIMITER ';'CSV HEADER;"
 
 psql -U postgres  resultadosofertaacademica -c "CREATE TABLE Egresados2020(CURSO_ACADEMICO SMALLINT,LOCALIDAD VARCHAR(100), ESTUDIO VARCHAR(150),TIPO_ESTUDIO VARCHAR(50), TIPO_EGRESO VARCHAR(70), SEXO VARCHAR(10), ALUMNOS_GRADUADOS SMALLINT, ALUMNOS_INTERRUMPEN_ESTUDIOS INT, ALUMNOS_INTERRUMPEN_EST_ANO1 INT, ALUMNOS_TRASLADAN_OTRA_UNIV INT , DURACION_mEDIA_GRADUADOS FLOAT, TASA_EFIENCIA FLOAT, FECHA_ACTUALIZACION DATE);"
-psql -U postgres resultadosofertaacademica -c "COPY Egresados2020 FROM '/etc/postgresql/Practica1/Egresados2021.csv' DELIMITER ';'CSV HEADER;"
+psql -U postgres resultadosofertaacademica -c "COPY Egresados2020 FROM '/etc/postgresql/Practica1/Egresados2020.csv' DELIMITER ';'CSV HEADER;"
 
 psql -U postgres  resultadosofertaacademica -c "CREATE TABLE Egresados2019(CURSO_ACADEMICO SMALLINT,LOCALIDAD VARCHAR(100), ESTUDIO VARCHAR(150),TIPO_ESTUDIO VARCHAR(50), TIPO_EGRESO VARCHAR(70), SEXO VARCHAR(10), ALUMNOS_GRADUADOS SMALLINT, ALUMNOS_INTERRUMPEN_ESTUDIOS INT, ALUMNOS_INTERRUMPEN_EST_ANO1 INT, ALUMNOS_TRASLADAN_OTRA_UNIV INT , DURACION_mEDIA_GRADUADOS FLOAT, TASA_EFIENCIA FLOAT, FECHA_ACTUALIZACION DATE);"
 psql -U postgres resultadosofertaacademica -c "COPY Egresados2019 FROM '/etc/postgresql/Practica1/Egresados2021.csv' DELIMITER ';'CSV HEADER;"
@@ -192,7 +192,7 @@ psql resultadosofertaacademica -c "CREATE TABLE Impartido (
 #Copiar los datos de las tablas temporales a las definitivas
 
 #Curso 2021
-echo " Cargando datos en la relancion IMPARTIDO"
+echo " Cargando datos en la relacion IMPARTIDO"
 psql resultadosofertaacademica -c " WITH temporal(localidad, estudio, abandonos) AS(
                                         SELECT localidad, estudio, SUM(ALUMNOS_INTERRUMPEN_eSTUDIOS) 
                                         FROM Egresados2021
@@ -268,7 +268,7 @@ psql resultadosofertaacademica -c " WITH temporal(localidad, estudio, abandonos)
                                          temporalB.ESTUDIO = notas.ESTUDIO AND temporalB.Centro = notas.Centro 
                                     WHERE ALUMNOS_MATRICULADOS IS NOT NULL; "
 
-echo " Datos cargados en la relancion IMPARTIDO"
+echo " Datos cargados en la relacion IMPARTIDO"
 echo "\n"
 
 
@@ -384,14 +384,17 @@ psql resultadosofertaacademica -c " CREATE USER profesor WITH ENCRYPTED PASSWORD
 psql resultadosofertaacademica -c "  GRANT CONNECT ON DATABASE resultadosofertaacademica TO profesor;"
 psql resultadosofertaacademica -c " GRANT SELECT ON ALL TABLES IN SCHEMA public TO profesor;"
 
+: <<'Consulta1'
+SELECT Indice_ocupacion,  Localidad, nombre_estudio 
+FROM ( select *, ROW_NUMBER() OVER (PARTITION BY Localidad, curso ORDER BY INDICE_OCUPACION DESC) AS aux 
+       FROM Impartido WHERE curso='2020') AS temporal 
+WHERE aux<3 order by localidad;
+Consulta1
 
-#SELECT Indice_ocupacion,  Localidad, nombre_estudio 
-#FROM ( select *, ROW_NUMBER() OVER (PARTITION BY Localidad, curso ORDER BY INDICE_OCUPACION DESC) AS aux 
-#       FROM Impartido) AS temporal 
-#WHERE aux<3 order by localidad;
-
-#SELECT nombre_centro, universidad_destino, plazas_asignadas 
-#FROM  (SELECT nombre_centro, universidad_destino, plazas_asignadas, ROW_NUMBER() OVER(PARTITION BY nombre_centro ORDER BY plazas_asignadas DESC)ranking
-#        FROM Realiza 
-#        WHERE curso='2021' AND in_out LIKE 'IN')aux 
+: <<'Consulta2'
+SELECT nombre_centro, universidad_destino, plazas_asignadas 
+FROM  (SELECT nombre_centro, universidad_destino, plazas_asignadas, ROW_NUMBER() OVER(PARTITION BY nombre_centro ORDER BY plazas_asignadas DESC)ranking
+        FROM Realiza 
+        WHERE curso='2021' AND in_out LIKE 'IN')aux 
 #WHERE ranking = 1;
+Consulta2
