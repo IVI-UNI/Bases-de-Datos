@@ -4,7 +4,7 @@
 echo "Comienza el script de mysql"
 
 echo "Descargando las notas de corte:"
-: <<'Descarga'
+
 #Obtención de los datos de notas de corte de los últimos 3 años
 wget -q -O /var/lib/mysql-files/notasCorte2021.csv 'https://zaguan.unizar.es/record/98173/files/CSV.csv'
 sed -i -e 's/Grado: //g' /var/lib/mysql-files/notasCorte2021.csv
@@ -64,7 +64,7 @@ sed -i -e 's/Grado: //g' /var/lib/mysql-files/Egresados2020.csv
 wget -q -O /var/lib/mysql-files/Egresados2019.csv 'https://zaguan.unizar.es/record/83979/files/CSV.csv'
 sed -i '/Grado/!d' /var/lib/mysql-files/Egresados2019.csv
 sed -i -e 's/Grado: //g' /var/lib/mysql-files/Egresados2019.csv
-Descarga
+
 echo "Introduce la contraseña para el usuario administrador: "
 read -s contrasena
 
