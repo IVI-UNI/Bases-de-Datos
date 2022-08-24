@@ -4,7 +4,7 @@
 echo "Comienza el script de mysql"
 
 echo "Descargando las notas de corte:"
-
+: <<'Descarga'
 #Obtención de los datos de notas de corte de los últimos 3 años
 wget -q -O /var/lib/mysql-files/notasCorte2021.csv 'https://zaguan.unizar.es/record/98173/files/CSV.csv'
 sed -i -e 's/Grado: //g' /var/lib/mysql-files/notasCorte2021.csv
@@ -64,7 +64,7 @@ sed -i -e 's/Grado: //g' /var/lib/mysql-files/Egresados2020.csv
 wget -q -O /var/lib/mysql-files/Egresados2019.csv 'https://zaguan.unizar.es/record/83979/files/CSV.csv'
 sed -i '/Grado/!d' /var/lib/mysql-files/Egresados2019.csv
 sed -i -e 's/Grado: //g' /var/lib/mysql-files/Egresados2019.csv
-
+Descarga
 echo "Introduce la contraseña para el usuario administrador: "
 read -s contrasena
 
@@ -86,7 +86,6 @@ mysql -e "FLUSH PRIVILEGES;"
 
 #Creación de 3 tablas para las notas de corte los años 2019, 2020 y 2021 y se cargan los datos de sus correspondientes CSV
 MYSQL_PWD=${PASSWDDB} mysql -u administrador -D resultadosofertaacademica -e "CREATE TABLE NotasCorte2021(CURSO_ACADEMICO INT, ESTUDIO VARCHAR(100), LOCALIDAD VARCHAR(30), CENTRO VARCHAR(100), PRELA_CONVO_NOTA_DEF CHAR(2), NOTA_CORTE_DEFINITIVA_JULIO  FLOAT, NOTA_CORTE_DEFINITIVA_SEPTIEMBRE FLOAT, FECHA_ACTUALIZACION VARCHAR(15));"
-echo "NO WARNING ENCIMA ------------"
 MYSQL_PWD=${PASSWDDB} mysql -u administrador -D resultadosofertaacademica -e "LOAD DATA INFILE '/var/lib/mysql-files/notasCorte2021.csv' INTO TABLE NotasCorte2021 FIELDS TERMINATED BY ';' ENCLOSED BY'' LINES TERMINATED BY '\n' IGNORE 1 ROWS (CURSO_ACADEMICO, ESTUDIO, LOCALIDAD, CENTRO, PRELA_CONVO_NOTA_DEF, NOTA_CORTE_DEFINITIVA_JULIO, @NOTA_CORTE_DEFINITIVA_SEPTIEMBRE, FECHA_ACTUALIZACION) SET NOTA_CORTE_DEFINITIVA_SEPTIEMBRE = NULLIF(@NOTA_CORTE_DEFINITIVA_SEPTIEMBRE, '');"
 
 
@@ -261,6 +260,7 @@ echo " Cargando datos en la tabla Estudio "
 MYSQL_PWD=${PASSWDDB} mysql -u administrador -D resultadosofertaacademica -e "INSERT INTO Estudio(nombre_estudio) SELECT distinct ESTUDIO  FROM Oferta_Ocupacion2021;"
 MYSQL_PWD=${PASSWDDB} mysql -u administrador -D resultadosofertaacademica -e "INSERT INTO Estudio(nombre_estudio) SELECT ESTUDIO ESTUDIO FROM Oferta_Ocupacion2020 WHERE ESTUDIO NOT IN(SELECT nombre_estudio FROM Estudio);"
 MYSQL_PWD=${PASSWDDB} mysql -u administrador -D resultadosofertaacademica -e "INSERT INTO Estudio(nombre_estudio) SELECT ESTUDIO ESTUDIO FROM Oferta_Ocupacion2019 WHERE ESTUDIO NOT IN(SELECT nombre_estudio FROM Estudio);"
+echo " Cargando datos en la tabla Realiza "
 MYSQL_PWD=${PASSWDDB} mysql -u administrador -D resultadosofertaacademica -e "INSERT INTO Realiza (curso, nombre_movilidad, nombre_centro, nombre_pais, area_estudios,
                                                  in_out, nombre_idioma, universidad_destino, plazas_ofertadas, plazas_asignadas)
                                     SELECT CURSO_ACADEMICO, NOMBRE_PROGRAMA_MOVILIDAD, CENTRO, PAIS_UNIVERSIDAD_ACUERDO, NOMBRE_AREA_ESTUDIOS_MOV,
@@ -277,7 +277,7 @@ MYSQL_PWD=${PASSWDDB} mysql -u administrador -D resultadosofertaacademica -e "IN
                                              IN_OUT, NOMBRE_IDIOMA_NIVEL_MOVILIDAD, UNIVERSIDAD_ACUERDO, PLAZAS_OFERTADAS_ALUMNOS, PLAZAS_ASIGNADAS_ALUMNO_OUT
                                     FROM movilidad2019;"      
                                                                
-
+echo " Cargando datos en la tabla Impartido "
 MYSQL_PWD=${PASSWDDB} mysql -u administrador -D resultadosofertaacademica -e "CREATE TABLE temporal(CURSO_ACADEMICO VARCHAR (15), localidad VARCHAR(100), estudio varchar(150), abandonos INT);"
 
 MYSQL_PWD=${PASSWDDB} mysql -u administrador -D resultadosofertaacademica -e "insert INTO temporal(localidad, estudio, abandonos, CURSO_ACADEMICO) 
@@ -358,9 +358,23 @@ MYSQL_PWD=${PASSWDDB} mysql -u administrador -D resultadosofertaacademica -e "IN
                                          temporalB.ESTUDIO = notas.ESTUDIO AND temporalB.Centro = notas.Centro 
                                     WHERE ALUMNOS_MATRICULADOS IS NOT NULL;"
 
-mysql -e "CREATE USER profesor@localhost IDENTIFIED BY 'lol';"
+echo "Se va a crear el usuario profesor con contraseña "lol""
+mysql -e "DROP USER IF EXISTS 'profesor'@'localhost'"
+mysql -e "CREATE USER 'profesor'@'localhost' IDENTIFIED BY 'lol';"
 mysql -e "GRANT SELECT ON ${MAINDB}.* TO 'profesor'@'localhost';"
 mysql -e "FLUSH PRIVILEGES;"
+echo "ANTES DEL TRIGGER";
+#Trigger que evita borrar de la tabla Realiza y muestra un mensaje de error
+MYSQL_PWD=${PASSWDDB} mysql -u administrador -D resultadosofertaacademica -e "DROP TRIGGER IF EXISTS Prohibido_borrar;"
+MYSQL_PWD=${PASSWDDB} mysql -u administrador -D resultadosofertaacademica -e " DELIMITER //
+                                                                               CREATE TRIGGER Prohibido_borrar 
+                                                                               BEFORE DELETE ON Realiza
+                                                                               FOR EACH ROW 
+                                                                               BEGIN 
+                                                                               SIGNAL SQLSTATE '45000' 
+                                                                                SET MESSAGE_TEXT='PROHIBIDO BORRAR DE ESTA TABLA'; 
+                                                                               END;//
+                                                                               DELIMITER ;"
 
 : <<'Consulta1'
 SELECT Indice_ocupacion,  Localidad, nombre_estudio 
